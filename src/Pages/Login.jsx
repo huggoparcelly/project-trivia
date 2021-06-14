@@ -6,7 +6,6 @@ class Login extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.checkInput = this.checkInput.bind(this);
     this.state = {
-      disabledButton: true,
       name: '',
       email: '',
     };
@@ -25,24 +24,39 @@ class Login extends Component {
     const emailValidate = (
       /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/
     );
-    if (email.match(emailValidate) && name.length > 2) {
-      this.setState({ disabledButton: false });
-    }
+    return (email.match(emailValidate) && name.length > 2);
   }
 
   render() {
-    const { disabledButton } = this.state;
     return (
       <div>
-        <form>
-          <label htmlFor="name">
-            <input type="text" id="name" name="name" onChange={ this.handleChange } />
-          </label>
-          <label htmlFor="email">
-            <input type="email" id="email" name="email" onChange={ this.handleChange } />
-          </label>
-          <button type="button" disabled={ disabledButton }>Entrar</button>
-        </form>
+
+        <label htmlFor="input-text">
+          <input
+            type="text"
+            name="name"
+            className="input-field"
+            placeholder="Name"
+            onChange={ this.handleChange }
+            data-testid="input-player-name"
+          />
+        </label>
+        <label htmlFor="input-email">
+          <input
+            type="text"
+            name="email"
+            placeholder="Email"
+            onChange={ this.handleChange }
+            data-testid="input-gravatar-email"
+          />
+        </label>
+        <button
+          type="button"
+          data-testid="btn-play"
+          disabled={ this.checkInput() }
+        >
+          Jogar
+        </button>
       </div>
     );
   }
