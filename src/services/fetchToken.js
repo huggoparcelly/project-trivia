@@ -1,25 +1,28 @@
-const requestApiSuccess = (api) => ({
-  type: 'API_SUCCESS',
-  payload: {
-    api,
-  },
-});
-const requestApiFail = (error) => ({
-  type: 'API_FAIL',
-  payload: {
-    error,
-  },
-});
+// const requestApiSuccess = (api) => ({
+//   type: 'API_SUCCESS',
+//   payload: {
+//     api,
+//   },
+// });
+// const requestApiFail = (error) => ({
+//   type: 'API_FAIL',
+//   payload: {
+//     error,
+//   },
+// });
 
-const fetchAPI = () => async (dispatch) => {
+async function fetchAPI() {
   try {
     const tokenRequest = await fetch('https://opentdb.com/api_token.php?command=request');
-    const tokenReturn = await tokenRequest.json();
+    const tokenReturn = await tokenRequest.json()
+      .then((response) => localStorage.setItem('token', response.token));
+    console.log(tokenReturn);
+    console.log('teste');
     localStorage.setItem('token', tokenReturn.token);
-    dispatch(requestApiSuccess());
+    // dispatch(requestApiSuccess());
   } catch (error) {
-    dispatch(requestApiFail(error));
+    // dispatch(requestApiFail(error));
   }
-};
+}
 
 export default fetchAPI;
