@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import fetchToken from '../services/fetchToken';
 
 class Login extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class Login extends Component {
     this.setState({
       [name]: value,
     });
+    localStorage.setItem(name, value);
   }
 
   checkInput() {
@@ -54,6 +56,7 @@ class Login extends Component {
           type="button"
           data-testid="btn-play"
           disabled={ this.checkInput() }
+          onClick={ fetchToken }
         >
           Jogar
         </button>
