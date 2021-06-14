@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import fetchToken from '../services/fetchToken';
 
 class Login extends Component {
@@ -6,10 +7,19 @@ class Login extends Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.checkInput = this.checkInput.bind(this);
+    this.fetchAndRedirect = this.fetchAndRedirect.bind(this);
     this.state = {
       name: '',
       email: '',
+      shouldRedirect: false,
     };
+  }
+
+  fetchAndRedirect() {
+    const shouldUpdate = fetchToken();
+    if (shouldUpdate) {
+      this.setState({ shouldRedirect: true });
+    }
   }
 
   handleChange({ target }) {
@@ -30,6 +40,8 @@ class Login extends Component {
   }
 
   render() {
+    const { shouldRedirect } = this.state;
+    if (shouldRedirect) return <Redirect to="/jogo" />;
     return (
       <div>
 
@@ -56,7 +68,7 @@ class Login extends Component {
           type="button"
           data-testid="btn-play"
           disabled={ this.checkInput() }
-          onClick={ fetchToken }
+          onClick={ () => this.fetchAndRedirect() }
         >
           Jogar
         </button>
