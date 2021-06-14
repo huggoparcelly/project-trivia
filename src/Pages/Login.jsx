@@ -24,7 +24,7 @@ class Login extends Component {
     const emailValidate = (
       /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/
     );
-    return (email.match(emailValidate) && name.length > 2);
+    return !(email.match(emailValidate) && name.length > 2);
   }
 
   render() {
