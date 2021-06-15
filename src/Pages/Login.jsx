@@ -15,6 +15,10 @@ class Login extends Component {
     };
   }
 
+  settingsButton() {
+    window.location.href = '/configuracoes';
+  }
+
   fetchAndRedirect() {
     const shouldUpdate = fetchToken();
     if (shouldUpdate) {
@@ -71,6 +75,13 @@ class Login extends Component {
           onClick={ () => this.fetchAndRedirect() }
         >
           Jogar
+        </button>
+        <button
+          type="button"
+          data-testid="btn-settings"
+          onClick={ () => this.settingsButton() }
+        >
+          Configurações
         </button>
       </div>
     );
