@@ -9,9 +9,7 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.saveTriviaOnGlobalState = this.saveTriviaOnGlobalState.bind(this);
-    this.changePageMode = this.changePageMode.bind(this);
     this.state = {
-      mode: 'initialpage',
       counter: 0,
     };
   }
@@ -27,10 +25,6 @@ class Game extends Component {
     // this.setState({mode: 'game'});
   }
 
-  changePageMode() {
-    this.setState({ mode: 'game' });
-  }
-
   renderInitialPage() {
     return (
       <div>
@@ -43,14 +37,14 @@ class Game extends Component {
 
   renderGame() {
     const { triviaQuestions } = this.props;
-    console.log(triviaQuestions);
     const { counter } = this.state;
     const questionToBeRendered = triviaQuestions[counter];
-    const { category, question, correct_answer, incorrect_answers } = questionToBeRendered;
-    const incorrectAnswersObject = incorrect_answers.map((answer) => ({ answer, correct: false }));
+    const { category, question } = questionToBeRendered;
+    const incorrectAnswersObject = questionToBeRendered.incorrect_answers
+      .map((answer) => ({ answer, correct: false }));
     const allAnswers = [
       ...incorrectAnswersObject,
-      { answer: correct_answer, correct: true },
+      { answer: questionToBeRendered.correct_answer, correct: true },
     ];
     return (
       <div>
@@ -72,7 +66,6 @@ class Game extends Component {
   }
 
   render() {
-    const { mode } = this.state;
     return (
       <div>
         {this.renderGame()}
@@ -90,15 +83,8 @@ const mapStateToProps = (state) => ({
 });
 
 Game.propTypes = {
-  XVIDEOS: PropTypes.number.isRequired,
-  triviaQuestions: PropTypes.shape({
-    response_code: PropTypes.number,
-    results: PropTypes.arrayOf(PropTypes.object),
-  }).isRequired,
+  triviaQuestions: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatchTrivia: PropTypes.func.isRequired,
-  XVIDEOS: PropTypes.func.isRequired,
-  XVIDEOS: PropTypes.func.isRequired,
-  XVIDEOS: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
