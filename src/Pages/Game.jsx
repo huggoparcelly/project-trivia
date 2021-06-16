@@ -60,7 +60,7 @@ class Game extends Component {
     const questionToBeRendered = triviaQuest[counter] ? triviaQuest[counter] : carregando;
     console.log(questionToBeRendered);
     const { category, question } = questionToBeRendered;
-    const incorrectAnswersObject = questionToBeRendered.incorrect_answers
+    const incorrectAnswersObject = questionToBeRendered.incorrect_answers;
     const rightAnswer = questionToBeRendered.correct_answer;
     const allAnswers = [
       ...incorrectAnswersObject,
@@ -79,7 +79,8 @@ class Game extends Component {
               className={ this.correctQuestion(answer === rightAnswer) }
               type="button"
               key={ index }
-              data-testid={ answer === rightAnswer ? 'correct-answer' : `wrong-answer-${index}` }
+              data-testid={ answer === rightAnswer
+                ? 'correct-answer' : `wrong-answer-${index}` }
               onClick={ this.colorButton }
             >
               {answer}
