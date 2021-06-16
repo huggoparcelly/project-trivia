@@ -3,7 +3,7 @@ const initialState = {
     category: 'Carregando',
     question: 'Carregando',
     correct_answer: 'Carregando',
-    incorrect_answers: ['Carregando'],
+    incorrect_answers: ['Carregand'],
   }],
 };
 

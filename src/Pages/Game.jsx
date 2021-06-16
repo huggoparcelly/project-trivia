@@ -55,7 +55,7 @@ class Game extends Component {
       category: 'Carregando',
       question: 'Carregando',
       correct_answer: 'Carregando',
-      incorrect_answers: ['Carregando'],
+      incorrect_answers: ['Carregand'],
     };
     const questionToBeRendered = triviaQuest[counter] ? triviaQuest[counter] : carregando;
     console.log(questionToBeRendered);
