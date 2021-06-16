@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Header from '../Components/Header';
 import { trivia } from '../actions';
 import fetchTrivia from '../services/fetchTrivia';
+import './Game.css';
 
 class Game extends Component {
   constructor(props) {
@@ -21,40 +22,35 @@ class Game extends Component {
     this.saveTriviaOnGlobalState();
   }
 
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const { showColor } = nextState;
+  //   return !showColor;
+  // }
+
   async saveTriviaOnGlobalState() {
     const { dispatchTrivia } = this.props;
     const triviaToDispatch = await fetchTrivia();
     dispatchTrivia(triviaToDispatch);
-    // this.setState({mode: 'game'});
   }
 
   colorButton() {
     this.setState({ showColor: true });
   }
 
-  correctQuestion(showColor, isCorrect) {
+  correctQuestion(isCorrect) {
+    const { showColor } = this.state;
     if (showColor && isCorrect) {
       return 'correct';
     }
-    if (showColor === true && isCorrect === false) {
+    if (showColor && isCorrect === false) {
       return 'wrong';
     }
-    return '';
-  }
-
-  renderInitialPage() {
-    return (
-      <div>
-        <Header />
-        <h1>JOGO</h1>
-        <button type="button" onClick={ this.changePageMode }>Começar</button>
-      </div>
-    );
+    return 'test';
   }
 
   renderGame() {
     const { triviaQuest } = this.props;
-    const { counter, showColor } = this.state;
+    const { counter } = this.state;
     const questionToBeRendered = triviaQuest[counter];
     console.log(questionToBeRendered);
     const { category, question } = questionToBeRendered;
@@ -73,7 +69,7 @@ class Game extends Component {
         {allAnswers.sort(() => (Math.random() < +'0.5' ? 1 : -'1'))
           .map((answer, index) => (
             <button
-              className={ this.correctQuestion(showColor, answer.correct) }
+              className={ this.correctQuestion(answer.correct) }
               type="button"
               key={ index }
               data-testid={ answer.correct ? 'correct-answer' : `wrong-answer-${index}` }
