@@ -3,7 +3,7 @@ const initialState = {
     category: 'Carregando',
     question: 'Carregando',
     correct_answer: 'Carregando',
-    incorrect_answers: ['Carregando'],
+    incorrect_answers: ['Carregand'],
   }],
 };
 
@@ -12,7 +12,7 @@ function trivia(state = initialState, action) {
   case 'RECEIVE_TRIVIA':
     return {
       ...state,
-      trivia: action.state,
+      results: action.state.results,
     };
 
   default:

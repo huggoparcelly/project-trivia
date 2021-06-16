@@ -4,13 +4,17 @@ import { connect } from 'react-redux';
 import Header from '../Components/Header';
 import { trivia } from '../actions';
 import fetchTrivia from '../services/fetchTrivia';
+import './Game.css';
 
 class Game extends Component {
   constructor(props) {
     super(props);
     this.saveTriviaOnGlobalState = this.saveTriviaOnGlobalState.bind(this);
+    this.colorButton = this.colorButton.bind(this);
     this.state = {
       counter: 0,
+      showColor: false,
+
     };
   }
 
@@ -18,49 +22,68 @@ class Game extends Component {
     this.saveTriviaOnGlobalState();
   }
 
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const { showColor } = nextState;
+  //   return !showColor;
+  // }
+
   async saveTriviaOnGlobalState() {
     const { dispatchTrivia } = this.props;
     const triviaToDispatch = await fetchTrivia();
     dispatchTrivia(triviaToDispatch);
-    // this.setState({mode: 'game'});
   }
 
-  renderInitialPage() {
-    return (
-      <div>
-        <Header />
-        <h1>JOGO</h1>
-        <button type="button" onClick={ this.changePageMode }>Começar</button>
-      </div>
-    );
+  colorButton() {
+    this.setState({ showColor: true });
+  }
+
+  correctQuestion(isCorrect) {
+    const { showColor } = this.state;
+    if (showColor && isCorrect) {
+      return 'correct';
+    }
+    if (showColor && isCorrect === false) {
+      return 'wrong';
+    }
+    return 'test';
   }
 
   renderGame() {
-    const { triviaQuestions } = this.props;
+    const { triviaQuest } = this.props;
     const { counter } = this.state;
-    const questionToBeRendered = triviaQuestions[counter];
+    const carregando = {
+      category: 'Carregando',
+      question: 'Carregando',
+      correct_answer: 'Carregando',
+      incorrect_answers: ['Carregand'],
+    };
+    const questionToBeRendered = triviaQuest[counter] ? triviaQuest[counter] : carregando;
     console.log(questionToBeRendered);
     const { category, question } = questionToBeRendered;
-    const incorrectAnswersObject = questionToBeRendered.incorrect_answers
-      .map((answer) => ({ answer, correct: false }));
+    const incorrectAnswersObject = questionToBeRendered.incorrect_answers;
+    const rightAnswer = questionToBeRendered.correct_answer;
     const allAnswers = [
       ...incorrectAnswersObject,
-      { answer: questionToBeRendered.correct_answer, correct: true },
+      rightAnswer,
     ];
+    console.log(allAnswers);
     return (
       <div>
         <Header />
         <h1>JOGO AQUI</h1>
         <p data-testid="question-category">{category}</p>
         <p data-testid="question-text">{question.toString()}</p>
-        {allAnswers.sort(() => (Math.random() < +'0.5' ? 1 : -'1'))
+        {allAnswers.sort()
           .map((answer, index) => (
             <button
+              className={ this.correctQuestion(answer === rightAnswer) }
               type="button"
               key={ index }
-              data-testid={ answer.correct ? 'correct-answer' : `wrong-answer-${index}` }
+              data-testid={ answer === rightAnswer
+                ? 'correct-answer' : `wrong-answer-${index}` }
+              onClick={ this.colorButton }
             >
-              {answer.answer}
+              {answer}
             </button>
           ))}
       </div>
@@ -81,11 +104,11 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-  triviaQuestions: state.trivia.results,
+  triviaQuest: state.trivia.results,
 });
 
 Game.propTypes = {
-  triviaQuestions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  triviaQuest: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatchTrivia: PropTypes.func.isRequired,
 };
 

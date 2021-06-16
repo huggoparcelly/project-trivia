@@ -16,7 +16,7 @@ class Login extends Component {
   }
 
   settingsButton() {
-    window.location.href = '/Configuracoes';
+    window.location.href = '/configuracoes';
   }
 
   fetchAndRedirect() {
