@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { chronometre } from '../actions';
 
 class Chronometre extends Component {
   constructor(props) {
@@ -16,20 +19,34 @@ class Chronometre extends Component {
           seconds: prevState.seconds - 1,
         }
       ));
+      this.getTimer();
     }, ONE_SECOND);
   }
 
-  componentDidUpdate() {
+  getTimer() {
+    const { seconds } = this.state;
+    const { dispatchTimer } = this.props;
+    if (seconds <= 0) {
+      dispatchTimer();
+    }
   }
 
   render() {
     const { seconds } = this.state;
     return (
       <div>
-        <p>{ seconds }</p>
+        <p>{ seconds > 0 ? seconds : '0' }</p>
       </div>
     );
   }
 }
 
-export default Chronometre;
+const mapDispatchToProps = (dispatch) => ({
+  dispatchTimer: () => dispatch(chronometre(true)),
+});
+
+Chronometre.propTypes = {
+  dispatchTimer: PropTypes.func.isRequired,
+};
+
+export default connect(null, mapDispatchToProps)(Chronometre);

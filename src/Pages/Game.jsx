@@ -23,11 +23,6 @@ class Game extends Component {
     this.saveTriviaOnGlobalState();
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   const { showColor } = nextState;
-  //   return !showColor;
-  // }
-
   async saveTriviaOnGlobalState() {
     const { dispatchTrivia } = this.props;
     const triviaToDispatch = await fetchTrivia();
@@ -50,7 +45,7 @@ class Game extends Component {
   }
 
   renderGame() {
-    const { triviaQuest } = this.props;
+    const { triviaQuest, timerIsOver } = this.props;
     const { counter } = this.state;
     const carregando = {
       category: 'Carregando',
@@ -59,7 +54,6 @@ class Game extends Component {
       incorrect_answers: ['Carregand'],
     };
     const questionToBeRendered = triviaQuest[counter] ? triviaQuest[counter] : carregando;
-    console.log(questionToBeRendered);
     const { category, question } = questionToBeRendered;
     const incorrectAnswersObject = questionToBeRendered.incorrect_answers;
     const rightAnswer = questionToBeRendered.correct_answer;
@@ -67,7 +61,6 @@ class Game extends Component {
       ...incorrectAnswersObject,
       rightAnswer,
     ];
-    console.log(allAnswers);
     return (
       <div>
         <Header />
@@ -77,6 +70,7 @@ class Game extends Component {
         {allAnswers.sort()
           .map((answer, index) => (
             <button
+              disabled={ timerIsOver }
               className={ this.correctQuestion(answer === rightAnswer) }
               type="button"
               key={ index }
@@ -107,11 +101,13 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   triviaQuest: state.trivia.results,
+  timerIsOver: state.timer.timerIsOver,
 });
 
 Game.propTypes = {
   triviaQuest: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatchTrivia: PropTypes.func.isRequired,
+  timerIsOver: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
