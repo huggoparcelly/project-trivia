@@ -55,27 +55,28 @@ class Game extends Component {
     console.log(questionToBeRendered);
     const { category, question } = questionToBeRendered;
     const incorrectAnswersObject = questionToBeRendered.incorrect_answers
-      .map((answer) => ({ answer, correct: false }));
+    const rightAnswer = questionToBeRendered.correct_answer;
     const allAnswers = [
       ...incorrectAnswersObject,
-      { answer: questionToBeRendered.correct_answer, correct: true },
+      rightAnswer,
     ];
+    console.log(allAnswers);
     return (
       <div>
         <Header />
         <h1>JOGO AQUI</h1>
         <p data-testid="question-category">{category}</p>
         <p data-testid="question-text">{question.toString()}</p>
-        {allAnswers.sort(() => (Math.random() < +'0.5' ? 1 : -'1'))
+        {allAnswers.sort()
           .map((answer, index) => (
             <button
-              className={ this.correctQuestion(answer.correct) }
+              className={ this.correctQuestion(answer === rightAnswer) }
               type="button"
               key={ index }
-              data-testid={ answer.correct ? 'correct-answer' : `wrong-answer-${index}` }
+              data-testid={ answer === rightAnswer ? 'correct-answer' : `wrong-answer-${index}` }
               onClick={ this.colorButton }
             >
-              {answer.answer}
+              {answer}
             </button>
           ))}
       </div>
