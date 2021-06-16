@@ -51,7 +51,13 @@ class Game extends Component {
   renderGame() {
     const { triviaQuest } = this.props;
     const { counter } = this.state;
-    const questionToBeRendered = triviaQuest[counter];
+    const carregando = {
+      category: 'Carregando',
+      question: 'Carregando',
+      correct_answer: 'Carregando',
+      incorrect_answers: ['Carregando'],
+    };
+    const questionToBeRendered = triviaQuest[counter] ? triviaQuest[counter] : carregando;
     console.log(questionToBeRendered);
     const { category, question } = questionToBeRendered;
     const incorrectAnswersObject = questionToBeRendered.incorrect_answers
