@@ -78,6 +78,7 @@ class Login extends Component {
         </button>
         <button
           type="button"
+          className="btn-field"
           data-testid="btn-settings"
           onClick={ () => this.settingsButton() }
         >

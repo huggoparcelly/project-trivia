@@ -16,8 +16,6 @@ async function fetchAPI() {
     const tokenRequest = await fetch('https://opentdb.com/api_token.php?command=request');
     const tokenReturn = await tokenRequest.json()
       .then((response) => localStorage.setItem('token', response.token));
-    console.log(tokenReturn);
-    console.log('teste');
     localStorage.setItem('token', tokenReturn.token);
     // dispatch(requestApiSuccess());
   } catch (error) {
