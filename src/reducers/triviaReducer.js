@@ -1,15 +1,13 @@
 const initialState = {
-  trivia: {
-    results: [{
-      category: 'Carregando',
-      question: 'Carregando',
-      correct_answer: 'Carregando',
-      incorrect_answers: ['Carregando'],
-    }],
-  },
+  results: [{
+    category: 'Carregando',
+    question: 'Carregando',
+    correct_answer: 'Carregando',
+    incorrect_answers: ['Carregando'],
+  }],
 };
 
-function triviaReducer(state = initialState, action) {
+function trivia(state = initialState, action) {
   switch (action.type) {
   case 'RECEIVE_TRIVIA':
     return {
@@ -22,4 +20,4 @@ function triviaReducer(state = initialState, action) {
   }
 }
 
-export default triviaReducer;
+export default trivia;

@@ -55,12 +55,13 @@ class Game extends Component {
         <p data-testid="question-text">{question.toString()}</p>
         {allAnswers.sort(() => (Math.random() < +'0.5' ? 1 : -'1'))
           .map((answer, index) => (
-            <p
+            <button
+              type="button"
               key={ index }
               data-testid={ answer.correct ? 'correct-answer' : `wrong-answer-${index}` }
             >
               {answer.answer}
-            </p>
+            </button>
           ))}
       </div>
     );
@@ -80,7 +81,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-  triviaQuestions: state.triviaReducer.trivia.results,
+  triviaQuestions: state.trivia.results,
 });
 
 Game.propTypes = {
