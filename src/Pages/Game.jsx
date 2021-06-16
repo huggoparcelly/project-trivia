@@ -39,6 +39,7 @@ class Game extends Component {
     const { triviaQuestions } = this.props;
     const { counter } = this.state;
     const questionToBeRendered = triviaQuestions[counter];
+    console.log(questionToBeRendered);
     const { category, question } = questionToBeRendered;
     const incorrectAnswersObject = questionToBeRendered.incorrect_answers
       .map((answer) => ({ answer, correct: false }));
