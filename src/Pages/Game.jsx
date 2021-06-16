@@ -5,6 +5,7 @@ import Header from '../Components/Header';
 import { trivia } from '../actions';
 import fetchTrivia from '../services/fetchTrivia';
 import './Game.css';
+import Chronometre from '../Components/Chronometre';
 
 class Game extends Component {
   constructor(props) {
@@ -86,6 +87,7 @@ class Game extends Component {
               {answer}
             </button>
           ))}
+        <Chronometre />
       </div>
     );
   }
