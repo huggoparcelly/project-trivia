@@ -13,6 +13,7 @@ class Game extends Component {
     this.state = {
       counter: 0,
       showColor: false,
+
     };
   }
 
