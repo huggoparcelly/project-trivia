@@ -2,10 +2,27 @@ import React, { Component } from 'react';
 import fetchGravatarImage from '../services/fetchGravatarImage';
 
 export default class Ranking extends Component {
+  componentDidMount() {
+    this.savePlayerInRanking();
+  }
+
   getPlayers() {
+    return JSON.parse(localStorage.getItem('ranking'));
+  }
+
+  savePlayerInRanking() {
     const state = JSON.parse(localStorage.getItem('state'));
-    const allPlayers = Object.values(state);
-    return allPlayers;
+    const { player } = state;
+    const rankingTest = localStorage.getItem('ranking');
+    if (rankingTest === null) localStorage.setItem('ranking', JSON.stringify([]));
+    const ranking = JSON.parse(localStorage.getItem('ranking'));
+    const newPlayer = {
+      name: player.name,
+      score: player.score,
+      picture: fetchGravatarImage(player.gravatarEmail),
+    };
+    ranking.push(newPlayer);
+    localStorage.setItem('ranking', JSON.stringify(ranking));
   }
 
   renderInitialPage() {
@@ -23,7 +40,7 @@ export default class Ranking extends Component {
               key={ index }
             >
               <img
-                src={ fetchGravatarImage(player.gravatarEmail) }
+                src={ player.picture }
                 alt="your avatar"
               />
               <p data-testid={ `player-name-${index}` }>{player.name}</p>
