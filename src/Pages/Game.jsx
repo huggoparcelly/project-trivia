@@ -18,7 +18,6 @@ class Game extends Component {
       showColor: false,
       timerIsOver: false,
       seconds: 30,
-      score: 0,
     };
   }
 
@@ -44,28 +43,18 @@ class Game extends Component {
     }
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   const { showColor } = nextState;
-  //   return !showColor;
-  // }
-
-  savePoints(scoreToAdd) {
-    const { seconds, score } = this.state;
-    const actualPlayer = JSON.parse(localStorage.getItem('player'));
-    const { score: actualScore } = actualPlayer;
-    const newScore = actualScore + scoreToAdd;
+  saveScore(scoreToAdd) {
+    const localStorageState = JSON.parse(localStorage.getItem('state'));
+    const { player } = localStorageState;
+    player.score += scoreToAdd;
+    localStorage.setItem('state', JSON.stringify({ player }));
   }
 
-  inicialLocalStorage() {
-    const save = {
-      player: {
-        name,
-        assertions,
-        score,
-        gravatarEmail,
-      }
-    }
-
+  increaseAssertion() {
+    const localStorageState = JSON.parse(localStorage.getItem('state'));
+    const { player } = localStorageState;
+    player.assertion += 1;
+    localStorage.setItem('state', JSON.stringify({ player }));
   }
 
   async saveTriviaOnGlobalState() {
@@ -89,7 +78,7 @@ class Game extends Component {
       <button
         type="button"
         data-testid="btn-next"
-        onClick={this.nextQuestion}
+        onClick={ this.nextQuestion }
       >
         Próxima
       </button>
@@ -141,12 +130,12 @@ class Game extends Component {
         {allAnswers.sort()
           .map((answer, index) => (
             <button
-              className={this.correctQuestion(answer === rightAnswer)}
+              className={ this.correctQuestion(answer === rightAnswer) }
               type="button"
-              key={index}
-              data-testid={answer === rightAnswer
-                ? 'correct-answer' : `wrong-answer-${index}`}
-              onClick={this.colorButton}
+              key={ index }
+              data-testid={ answer === rightAnswer
+                ? 'correct-answer' : `wrong-answer-${index}` }
+              onClick={ this.colorButton }
             >
               {answer}
             </button>
