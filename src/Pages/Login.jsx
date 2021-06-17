@@ -31,7 +31,6 @@ class Login extends Component {
     this.setState({
       [name]: value,
     });
-    console.log(localStorage.getItem('state'));
     if (localStorage.getItem('state') === null) {
       const initialLocalState = { player: {
         name: '',
@@ -40,7 +39,6 @@ class Login extends Component {
         gravatarEmail: '',
       } };
       localStorage.setItem('state', JSON.stringify(initialLocalState));
-      console.log('teste');
     }
     const actualState = JSON.parse(localStorage.getItem('state'));
     const { player } = actualState;
