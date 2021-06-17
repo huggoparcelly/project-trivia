@@ -11,15 +11,36 @@ class Game extends Component {
     super(props);
     this.saveTriviaOnGlobalState = this.saveTriviaOnGlobalState.bind(this);
     this.colorButton = this.colorButton.bind(this);
+    this.nextQuestion = this.nextQuestion.bind(this);
+    this.getTimer = this.getTimer.bind(this);
     this.state = {
       counter: 0,
       showColor: false,
-
+      timerIsOver: false,
+      seconds: 30,
     };
   }
 
   componentDidMount() {
     this.saveTriviaOnGlobalState();
+    const ONE_SECOND = 1000;
+    setInterval(() => {
+      this.setState((prevState) => (
+        {
+          seconds: prevState.seconds - 1,
+        }
+      ));
+      this.getTimer();
+    }, ONE_SECOND);
+  }
+
+  getTimer() {
+    const { seconds } = this.state;
+    if (seconds <= 0) {
+      this.setState({
+        timerIsOver: true,
+      });
+    }
   }
 
   // shouldComponentUpdate(nextProps, nextState) {
@@ -33,8 +54,33 @@ class Game extends Component {
     dispatchTrivia(triviaToDispatch);
   }
 
+  nextQuestion() {
+    const INITIAL_SECONDS = 30;
+    this.setState((prevState) => ({
+      counter: prevState.counter + 1,
+      showColor: false,
+      timerIsOver: false,
+      seconds: INITIAL_SECONDS,
+    }));
+  }
+
+  nextButton() {
+    return (
+      <button
+        type="button"
+        data-testid="btn-next"
+        onClick={ this.nextQuestion }
+      >
+        Próxima
+      </button>
+    );
+  }
+
   colorButton() {
-    this.setState({ showColor: true });
+    this.setState({
+      showColor: true,
+      timerIsOver: true,
+    });
   }
 
   correctQuestion(isCorrect) {
@@ -50,9 +96,14 @@ class Game extends Component {
 
   renderGame() {
     const { triviaQuest } = this.props;
-    const { counter } = this.state;
-    const questionToBeRendered = triviaQuest[counter];
-    console.log(questionToBeRendered);
+    const { counter, seconds, timerIsOver, showColor } = this.state;
+    const carregando = {
+      category: 'Carregando',
+      question: 'Carregando',
+      correct_answer: 'Carregando',
+      incorrect_answers: ['Carregand'],
+    };
+    const questionToBeRendered = triviaQuest[counter] ? triviaQuest[counter] : carregando;
     const { category, question } = questionToBeRendered;
     const incorrectAnswersObject = questionToBeRendered.incorrect_answers;
     const rightAnswer = questionToBeRendered.correct_answer;
@@ -79,6 +130,8 @@ class Game extends Component {
               {answer}
             </button>
           ))}
+        <p>{ seconds > 0 ? seconds : 0 }</p>
+        { showColor || timerIsOver ? this.nextButton() : null }
       </div>
     );
   }
