@@ -5,22 +5,42 @@ import Header from '../Components/Header';
 import { trivia } from '../actions';
 import fetchTrivia from '../services/fetchTrivia';
 import './Game.css';
-import Chronometre from '../Components/Chronometre';
 
 class Game extends Component {
   constructor(props) {
     super(props);
     this.saveTriviaOnGlobalState = this.saveTriviaOnGlobalState.bind(this);
     this.colorButton = this.colorButton.bind(this);
+    this.nextQuestion = this.nextQuestion.bind(this);
+    this.getTimer = this.getTimer.bind(this);
     this.state = {
       counter: 0,
       showColor: false,
-
+      timerIsOver: false,
+      seconds: 30,
     };
   }
 
   componentDidMount() {
     this.saveTriviaOnGlobalState();
+    const ONE_SECOND = 1000;
+    setInterval(() => {
+      this.setState((prevState) => (
+        {
+          seconds: prevState.seconds - 1,
+        }
+      ));
+      this.getTimer();
+    }, ONE_SECOND);
+  }
+
+  getTimer() {
+    const { seconds } = this.state;
+    if (seconds <= 0) {
+      this.setState({
+        timerIsOver: true,
+      });
+    }
   }
 
   async saveTriviaOnGlobalState() {
@@ -29,8 +49,33 @@ class Game extends Component {
     dispatchTrivia(triviaToDispatch);
   }
 
+  nextQuestion() {
+    const INITIAL_SECONDS = 30;
+    this.setState((prevState) => ({
+      counter: prevState.counter + 1,
+      showColor: false,
+      timerIsOver: false,
+      seconds: INITIAL_SECONDS,
+    }));
+  }
+
+  nextButton() {
+    return (
+      <button
+        type="button"
+        data-testid="btn-next"
+        onClick={ this.nextQuestion }
+      >
+        Próxima
+      </button>
+    );
+  }
+
   colorButton() {
-    this.setState({ showColor: true });
+    this.setState({
+      showColor: true,
+      timerIsOver: true,
+    });
   }
 
   correctQuestion(isCorrect) {
@@ -45,8 +90,8 @@ class Game extends Component {
   }
 
   renderGame() {
-    const { triviaQuest, timerIsOver } = this.props;
-    const { counter } = this.state;
+    const { triviaQuest } = this.props;
+    const { counter, seconds, timerIsOver, showColor } = this.state;
     const carregando = {
       category: 'Carregando',
       question: 'Carregando',
@@ -81,7 +126,8 @@ class Game extends Component {
               {answer}
             </button>
           ))}
-        <Chronometre />
+        <p>{ seconds > 0 ? seconds : 0 }</p>
+        { showColor || timerIsOver ? this.nextButton() : null }
       </div>
     );
   }
@@ -107,7 +153,6 @@ const mapStateToProps = (state) => ({
 Game.propTypes = {
   triviaQuest: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatchTrivia: PropTypes.func.isRequired,
-  timerIsOver: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
