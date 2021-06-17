@@ -2,12 +2,22 @@ import React, { Component } from 'react';
 import fetchGravatarImage from '../services/fetchGravatarImage';
 
 export default class Ranking extends Component {
+  constructor(props) {
+    super(props);
+    this.getPlayers = this.getPlayers.bind(this);
+    this.state = {
+      allPlayers: [],
+    };
+  }
+
   componentDidMount() {
     this.savePlayerInRanking();
+    this.getPlayers();
   }
 
   getPlayers() {
-    return JSON.parse(localStorage.getItem('ranking'));
+    const allPlayers = JSON.parse(localStorage.getItem('ranking'));
+    this.setState({ allPlayers });
   }
 
   savePlayerInRanking() {
@@ -30,22 +40,23 @@ export default class Ranking extends Component {
   }
 
   render() {
-    const allPlayers = this.getPlayers();
+    const { allPlayers } = this.state;
     return (
       <div>
         <p data-testid="ranking-title">Ranking</p>
         <ul>
-          {allPlayers.map((player, index) => (
-            <li
-              key={ index }
-            >
-              <img
-                src={ player.picture }
-                alt="your avatar"
-              />
-              <p data-testid={ `player-name-${index}` }>{player.name}</p>
-              <p data-testid={ `player-score-${index}` }>{player.score}</p>
-            </li>))}
+          {allPlayers.sort((a,b) => b.score - a.score)
+            .map((player, index) => (
+              <li
+                key={ index }
+              >
+                <img
+                  src={ player.picture }
+                  alt="your avatar"
+                />
+                <p data-testid={ `player-name-${index}` }>{player.name}</p>
+                <p data-testid={ `player-score-${index}` }>{player.score}</p>
+              </li>))}
         </ul>
         <button
           type="button"
