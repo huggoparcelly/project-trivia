@@ -69,3 +69,4 @@ export default class Ranking extends Component {
     );
   }
 }
+// lint passe, por favor...
