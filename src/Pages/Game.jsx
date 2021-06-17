@@ -18,20 +18,23 @@ class Game extends Component {
       showColor: false,
       timerIsOver: false,
       seconds: 30,
+      stopTimer: false,
     };
   }
 
   componentDidMount() {
     this.saveTriviaOnGlobalState();
     const ONE_SECOND = 1000;
+    const { stopTimer } = this.state;
     setInterval(() => {
       this.setState((prevState) => (
         {
-          seconds: prevState.seconds - 1,
+          seconds: stopTimer ? prevState.seconds : prevState.seconds - 1,
         }
       ));
       this.getTimer();
     }, ONE_SECOND);
+    this.resetScore();
   }
 
   getTimer() {
@@ -41,6 +44,13 @@ class Game extends Component {
         timerIsOver: true,
       });
     }
+  }
+
+  resetScore() {
+    const localStorageState = JSON.parse(localStorage.getItem('state'));
+    const { player } = localStorageState;
+    player.score = 0;
+    localStorage.setItem('state', JSON.stringify({ player }));
   }
 
   saveScore(scoreToAdd) {
@@ -92,6 +102,29 @@ class Game extends Component {
     });
   }
 
+  handleClick(correctAnswer, difficulty) {
+    this.setState({ stopTimer: true });
+    const { seconds } = this.state;
+    if (correctAnswer) {
+      this.increaseAssertion();
+      let difficulttyMultiplier = 0;
+      const hardMultiplier = 3;
+      switch (difficulty) {
+      case 'hard':
+        difficulttyMultiplier = hardMultiplier;
+        break;
+      case 'medium':
+        difficulttyMultiplier = 2;
+        break;
+      default:
+        difficulttyMultiplier = 1;
+        break;
+      }
+      const baseScore = 10;
+      this.saveScore(baseScore + (seconds * difficulttyMultiplier));
+    }
+  }
+
   correctQuestion(isCorrect) {
     const { showColor } = this.state;
     if (showColor && isCorrect) {
@@ -130,12 +163,17 @@ class Game extends Component {
         {allAnswers.sort()
           .map((answer, index) => (
             <button
+              disabled={ timerIsOver }
               className={ this.correctQuestion(answer === rightAnswer) }
               type="button"
               key={ index }
               data-testid={ answer === rightAnswer
                 ? 'correct-answer' : `wrong-answer-${index}` }
-              onClick={ this.colorButton }
+              onClick={ () => {
+                this.colorButton();
+                this.handleClick((answer === rightAnswer),
+                  questionToBeRendered.difficulty);
+              } }
             >
               {answer}
             </button>
