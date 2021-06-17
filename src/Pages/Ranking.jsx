@@ -45,7 +45,7 @@ export default class Ranking extends Component {
       <div>
         <p data-testid="ranking-title">Ranking</p>
         <ul>
-          {allPlayers.sort((a,b) => b.score - a.score)
+          {allPlayers.sort((a, b) => b.score - a.score)
             .map((player, index) => (
               <li
                 key={ index }
@@ -69,3 +69,4 @@ export default class Ranking extends Component {
     );
   }
 }
+// linter
