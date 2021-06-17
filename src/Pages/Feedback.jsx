@@ -25,8 +25,19 @@ class Feedback extends Component {
         </p>
         <p data-testid="feedback-total-score">{score}</p>
         <p data-testid="feedback-total-question">{assertions}</p>
+        <button
+          type="button"
+          data-testid="btn-ranking"
+          onClick={ this.renderRanking }
+        >
+          Ver Ranking
+        </button>
       </div>
     );
+  }
+
+  renderRanking() {
+    window.location.href = '/ranking';
   }
 
   renderPlayAgain() {
