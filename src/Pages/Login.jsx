@@ -31,7 +31,24 @@ class Login extends Component {
     this.setState({
       [name]: value,
     });
-    localStorage.setItem(name, value);
+    if (localStorage.getItem('state') === null) {
+      const initialLocalState = { player: {
+        name: '',
+        assertions: 0,
+        score: 0,
+        gravatarEmail: '',
+      } };
+      localStorage.setItem('state', JSON.stringify(initialLocalState));
+    }
+    const actualState = JSON.parse(localStorage.getItem('state'));
+    const { player } = actualState;
+    if (name === 'email') {
+      player.gravatarEmail = value;
+    }
+    if (name === 'name') {
+      player.name = value;
+    }
+    localStorage.setItem('state', JSON.stringify({ player }));
   }
 
   checkInput() {

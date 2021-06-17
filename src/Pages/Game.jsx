@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Header from '../Components/Header';
@@ -18,20 +19,23 @@ class Game extends Component {
       showColor: false,
       timerIsOver: false,
       seconds: 30,
+      stopTimer: false,
     };
   }
 
   componentDidMount() {
     this.saveTriviaOnGlobalState();
     const ONE_SECOND = 1000;
+    const { stopTimer } = this.state;
     setInterval(() => {
       this.setState((prevState) => (
         {
-          seconds: prevState.seconds - 1,
+          seconds: stopTimer ? prevState.seconds : prevState.seconds - 1,
         }
       ));
       this.getTimer();
     }, ONE_SECOND);
+    this.resetScore();
   }
 
   getTimer() {
@@ -41,6 +45,29 @@ class Game extends Component {
         timerIsOver: true,
       });
     }
+  }
+
+  resetScore() {
+    const localStorageState = JSON.parse(localStorage.getItem('state'));
+    const { player } = localStorageState;
+    player.score = 0;
+    localStorage.setItem('state', JSON.stringify({ player }));
+  }
+
+  saveScore(scoreToAdd) {
+    const localStorageState = JSON.parse(localStorage.getItem('state'));
+    const { player } = localStorageState;
+    player.score += scoreToAdd;
+    localStorage.setItem('state', JSON.stringify({ player }));
+  }
+
+  increaseAssertion() {
+    const localStorageState = JSON.parse(localStorage.getItem('state'));
+    const { player } = localStorageState;
+    player.assertions += 1;
+    console.log(player);
+    localStorage.setItem('state', JSON.stringify({ player }));
+    console.log('teste');
   }
 
   async saveTriviaOnGlobalState() {
@@ -76,6 +103,29 @@ class Game extends Component {
       showColor: true,
       timerIsOver: true,
     });
+  }
+
+  handleClick(correctAnswer, difficulty) {
+    this.setState({ stopTimer: true });
+    const { seconds } = this.state;
+    if (correctAnswer) {
+      this.increaseAssertion();
+      let difficulttyMultiplier = 0;
+      const hardMultiplier = 3;
+      switch (difficulty) {
+      case 'hard':
+        difficulttyMultiplier = hardMultiplier;
+        break;
+      case 'medium':
+        difficulttyMultiplier = 2;
+        break;
+      default:
+        difficulttyMultiplier = 1;
+        break;
+      }
+      const baseScore = 10;
+      this.saveScore(baseScore + (seconds * difficulttyMultiplier));
+    }
   }
 
   correctQuestion(isCorrect) {
@@ -121,18 +171,25 @@ class Game extends Component {
               key={ index }
               data-testid={ answer === rightAnswer
                 ? 'correct-answer' : `wrong-answer-${index}` }
-              onClick={ this.colorButton }
+              onClick={ () => {
+                this.colorButton();
+                this.handleClick((answer === rightAnswer),
+                  questionToBeRendered.difficulty);
+              } }
             >
               {answer}
             </button>
           ))}
-        <p>{ seconds > 0 ? seconds : 0 }</p>
-        { showColor || timerIsOver ? this.nextButton() : null }
+        <p>{seconds > 0 ? seconds : 0}</p>
+        { showColor || timerIsOver ? this.nextButton() : null}
       </div>
     );
   }
 
   render() {
+    const { counter } = this.state;
+    const maxQuestion = 5;
+    if (counter >= maxQuestion) return <Redirect to="/feedback" />;
     return (
       <div>
         {this.renderGame()}
@@ -147,7 +204,6 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   triviaQuest: state.trivia.results,
-  timerIsOver: state.timer.timerIsOver,
 });
 
 Game.propTypes = {

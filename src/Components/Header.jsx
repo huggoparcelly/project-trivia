@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import fetchGravatarImage from '../services/fetchGravatarImage';
-// teste
+
 export default class Header extends Component {
   render() {
-    const name = localStorage.getItem('name');
+    const state = JSON.parse(localStorage.getItem('state'));
+    const { player } = state;
+    const { name, score } = player;
     return (
       <div>
         <header>
@@ -13,7 +15,7 @@ export default class Header extends Component {
             data-testid="header-profile-picture"
           />
           <p data-testid="header-player-name">{name}</p>
-          <p data-testid="header-score">0</p>
+          <p data-testid="header-score">{score}</p>
         </header>
       </div>
     );
