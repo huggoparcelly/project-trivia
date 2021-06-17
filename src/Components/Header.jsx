@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import fetchGravatarImage from '../services/fetchGravatarImage';
-// teste
+
 export default class Header extends Component {
   render() {
-    const name = localStorage.getItem('name');
+    const state = JSON.parse(localStorage.getItem('state'));
+    const { player } = state;
+    const { name } = player;
+    console.log(player);
     return (
       <div>
         <header>

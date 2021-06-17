@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Header from '../Components/Header';
@@ -153,7 +154,6 @@ class Game extends Component {
       ...incorrectAnswersObject,
       rightAnswer,
     ];
-    console.log(allAnswers);
     return (
       <div>
         <Header />
@@ -185,6 +185,9 @@ class Game extends Component {
   }
 
   render() {
+    const { counter } = this.state;
+    const maxQuestion = 5;
+    if (counter > maxQuestion) return <Redirect to="/feedback" />;
     return (
       <div>
         {this.renderGame()}
