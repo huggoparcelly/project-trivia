@@ -18,6 +18,7 @@ class Game extends Component {
       showColor: false,
       timerIsOver: false,
       seconds: 30,
+      score: 0,
     };
   }
 
@@ -48,6 +49,25 @@ class Game extends Component {
   //   return !showColor;
   // }
 
+  savePoints(scoreToAdd) {
+    const { seconds, score } = this.state;
+    const actualPlayer = JSON.parse(localStorage.getItem('player'));
+    const { score: actualScore } = actualPlayer;
+    const newScore = actualScore + scoreToAdd;
+  }
+
+  inicialLocalStorage() {
+    const save = {
+      player: {
+        name,
+        assertions,
+        score,
+        gravatarEmail,
+      }
+    }
+
+  }
+
   async saveTriviaOnGlobalState() {
     const { dispatchTrivia } = this.props;
     const triviaToDispatch = await fetchTrivia();
@@ -69,7 +89,7 @@ class Game extends Component {
       <button
         type="button"
         data-testid="btn-next"
-        onClick={ this.nextQuestion }
+        onClick={this.nextQuestion}
       >
         Próxima
       </button>
@@ -121,17 +141,18 @@ class Game extends Component {
         {allAnswers.sort()
           .map((answer, index) => (
             <button
-              className={ this.correctQuestion(answer === rightAnswer) }
+              className={this.correctQuestion(answer === rightAnswer)}
               type="button"
-              key={ index }
-              data-testid={ answer === rightAnswer ? 'correct-answer' : `wrong-answer-${index}` }
-              onClick={ this.colorButton }
+              key={index}
+              data-testid={answer === rightAnswer
+                ? 'correct-answer' : `wrong-answer-${index}`}
+              onClick={this.colorButton}
             >
               {answer}
             </button>
           ))}
-        <p>{ seconds > 0 ? seconds : 0 }</p>
-        { showColor || timerIsOver ? this.nextButton() : null }
+        <p>{seconds > 0 ? seconds : 0}</p>
+        { showColor || timerIsOver ? this.nextButton() : null}
       </div>
     );
   }
