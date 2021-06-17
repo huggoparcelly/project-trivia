@@ -64,8 +64,10 @@ class Game extends Component {
   increaseAssertion() {
     const localStorageState = JSON.parse(localStorage.getItem('state'));
     const { player } = localStorageState;
-    player.assertion += 1;
+    player.assertions += 1;
+    console.log(player);
     localStorage.setItem('state', JSON.stringify({ player }));
+    console.log('teste');
   }
 
   async saveTriviaOnGlobalState() {
@@ -187,7 +189,7 @@ class Game extends Component {
   render() {
     const { counter } = this.state;
     const maxQuestion = 5;
-    if (counter > maxQuestion) return <Redirect to="/feedback" />;
+    if (counter >= maxQuestion) return <Redirect to="/feedback" />;
     return (
       <div>
         {this.renderGame()}
